@@ -7,7 +7,6 @@ import os
 import re
 from bs4 import BeautifulSoup
 import requests
-import time
 
 # Page config
 st.set_page_config(
@@ -27,8 +26,34 @@ def load_html_file(file_path):
     return content
 
 @st.cache_data
-def extract_entities_from_html(html_content):
-    """Extract entities from HTML and get their coordinates"""
+def extract_all_entities_from_html(html_content):
+    """Extract all entities from HTML for statistics"""
+    soup = BeautifulSoup(html_content, 'html.parser')
+    entity_type_counts = {}
+    
+    # Find all entity marks
+    entity_marks = soup.find_all('mark', class_='entity')
+    
+    for mark in entity_marks:
+        # Find the span with entity type and link
+        span = mark.find('span')
+        if span:
+            span_text = span.get_text().strip()
+            
+            # Extract entity type (first word before the link)
+            entity_type = span_text.split()[0] if span_text else ""
+            
+            if entity_type:
+                if entity_type in entity_type_counts:
+                    entity_type_counts[entity_type] += 1
+                else:
+                    entity_type_counts[entity_type] = 1
+    
+    return entity_type_counts
+
+@st.cache_data
+def extract_geographic_entities_from_html(html_content):
+    """Extract geographic entities from HTML and get their coordinates"""
     soup = BeautifulSoup(html_content, 'html.parser')
     entities = []
     seen_qids = {}  # Cache for already processed QIDs
@@ -49,7 +74,7 @@ def extract_entities_from_html(html_content):
             # Extract entity type (first word before the link)
             entity_type = span_text.split()[0] if span_text else ""
             
-            # Only process location entities
+            # Only process location entities for mapping
             if entity_type == 'LOC':
                 # Find the link within the span
                 link = span.find('a')
@@ -268,11 +293,15 @@ sample_data/
         st.sidebar.success(f"Selected: {selected_file.replace(os.sep, '/')}")
         
         # Show file size and modification time
+        # Show file size and modification time
         if os.path.exists(selected_file):
             file_size = os.path.getsize(selected_file)
             file_size_kb = file_size / 1024
+            mod_time = os.path.getmtime(selected_file)
+            from datetime import datetime
+            mod_time_str = datetime.fromtimestamp(mod_time).strftime('%Y-%m-%d %H:%M:%S')
             st.sidebar.info(f"Size: {file_size_kb:.1f} KB")
-        
+            st.sidebar.info(f"Last modified: {mod_time_str}")
         
         # Main content area
         col1, col2 = st.columns([1, 1])
@@ -319,26 +348,39 @@ sample_data/
             
             # Extract entities and create map
             with st.spinner("Extracting geographic entities and fetching coordinates..."):
-                entities = extract_entities_from_html(html_content)
+                geographic_entities = extract_geographic_entities_from_html(html_content)
             
-            if entities:
-                # Display entity table
-                df = pd.DataFrame(entities)
+            # Extract all entities for statistics
+            all_entity_counts = extract_all_entities_from_html(html_content)
+            
+            if geographic_entities:
+                # Display entity table for geographic entities
+                df = pd.DataFrame(geographic_entities)
                 st.dataframe(df[['text', 'type', 'label', 'description', 'occurrences']], height=200)
                 
                 # Create and display map
-                m = create_map(entities)
+                m = create_map(geographic_entities)
                 st_folium(m, width=700, height=400)
-                
-                # Entity type summary
-                entity_counts = df['type'].value_counts()
-                st.bar_chart(entity_counts)
-                
             else:
                 st.warning("No geographic entities found with coordinates")
                 # Still show a default map
                 default_map = create_map([])
                 st_folium(default_map, width=700, height=400)
+            
+            # Show entity type distribution (all entity types)
+            st.subheader("📊 Entity Type Distribution")
+            if all_entity_counts:
+                # Convert to DataFrame for better visualization
+                entity_df = pd.DataFrame(list(all_entity_counts.items()), columns=['Entity Type', 'Count'])
+                entity_df = entity_df.sort_values('Count', ascending=False)
+                
+                # Display as bar chart
+                st.bar_chart(entity_df.set_index('Entity Type'))
+                
+                # Also show as a table
+                st.dataframe(entity_df, height=200)
+            else:
+                st.warning("No entities found in the document")
 
 if __name__ == "__main__":
     main()
