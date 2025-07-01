@@ -1,0 +1,31 @@
+{
+    "char_count": 61394,
+    "tokens": 14810,
+    "sents": 1389,
+    "ents": 570,
+    "ent_types": [
+        "DEMO",
+        "ROLE",
+        "ORG",
+        "EVENT",
+        "PERS",
+        "LOC"
+    ],
+    "ent_by_label": {
+        "PERS": 270,
+        "LOC": 43,
+        "ROLE": 232,
+        "EVENT": 4,
+        "DEMO": 19,
+        "ORG": 2
+    },
+    "ent_kb_ids": 17,
+    "ent_by_kb_id": {
+        "NIL": 553,
+        "Q190": 7,
+        "Q825": 3,
+        "Q5788": 2,
+        "Q3711": 4,
+        "Q208367": 1
+    }
+}
