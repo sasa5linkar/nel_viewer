@@ -31,7 +31,8 @@ You can see a live demo of this application at: [Your Streamlit Cloud URL]
    ```
 
 3. **Add your HTML files**
-   - Place your NER-processed HTML files in the `examples/` folder
+   - Place your NER-processed HTML files in the `examples/` or `sample_data/` folders
+   - Organize them in subfolders for better management (e.g., `examples/balkan_region/`)
    - Files should contain entities marked with `<mark class="entity">` tags
    - Location entities should have Wikidata QIDs in links
 
@@ -81,9 +82,22 @@ Where:
 
 ## Example Data
 
-The repository includes sample HTML files in the `examples/` folder:
+The repository includes sample HTML files organized in folders:
+
+**examples/balkan_region/**
+- `serbian_cities.html` - Serbian historical cities
+
+**examples/world_cities/**  
+- `global_capitals.html` - Major world capitals
+
+**examples/**
 - `serbian_geography.html` - Sample Serbian geography text
 - `european_cities.html` - Sample European cities text
+
+**sample_data/**
+- `test_document.html` - Simple test document
+
+The dropdown menu shows the full path (e.g., `examples/balkan_region/serbian_cities.html`) for easy organization.
 
 ## Technology Stack
 
