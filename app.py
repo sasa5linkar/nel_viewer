@@ -236,26 +236,43 @@ def main():
                     if file.endswith('.html'):
                         html_files.append(os.path.join(root, file))
     
+    # Sort files to group by subfolder
+    html_files.sort()
+    
     if not html_files:
         st.error("No HTML files found! Please upload your NER HTML files to the 'examples' or 'sample_data' folder.")
         st.info("Expected folder structure:")
         st.code("""
 examples/
-├── document1.html
-├── document2.html
-└── ...
+├── subfolder1/
+│   ├── document1.html
+│   └── document2.html
+├── subfolder2/
+│   └── document3.html
+└── single_file.html
+
+sample_data/
+├── test1.html
+└── test2.html
         """)
         return
     
     selected_file = st.sidebar.selectbox(
         "Choose an HTML file:",
         html_files,
-        format_func=lambda x: os.path.basename(x)
+        format_func=lambda x: x.replace('\\', '/') if '\\' in x else x  # Show full path with forward slashes
     )
     
     if selected_file:
         # Load and display file info
-        st.sidebar.success(f"Selected: {os.path.basename(selected_file)}")
+        st.sidebar.success(f"Selected: {selected_file.replace(os.sep, '/')}")
+        
+        # Show file size and modification time
+        if os.path.exists(selected_file):
+            file_size = os.path.getsize(selected_file)
+            file_size_kb = file_size / 1024
+            st.sidebar.info(f"Size: {file_size_kb:.1f} KB")
+        
         
         # Main content area
         col1, col2 = st.columns([1, 1])
