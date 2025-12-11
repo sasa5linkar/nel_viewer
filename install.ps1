@@ -72,7 +72,7 @@ if ($null -eq $pythonCommand) {
     Write-Host ""
     Write-Host "==================================================" -ForegroundColor Yellow
     Write-Host ""
-    
+
     # Ask if user wants to open the Python download page
     $response = Read-Host "Would you like to open the Python download page now? (y/n)"
     if ($response -eq "y" -or $response -eq "Y") {
@@ -185,7 +185,14 @@ if ($response -eq "y" -or $response -eq "Y") {
             & $activateScript
             Write-Host "✓ Virtual environment activated." -ForegroundColor Green
             # Update Python command to use virtual environment
-            $pythonCommand = Join-Path $venvPath "Scripts\python.exe"
+            $venvPython = Join-Path $venvPath "Scripts\python.exe"
+            if (Test-Path $venvPython) {
+                $pythonCommand = $venvPython
+            }
+            else {
+                Write-Host "⚠️  Warning: Could not find python.exe in virtual environment." -ForegroundColor Yellow
+                Write-Host "   Continuing with system Python." -ForegroundColor Yellow
+            }
         }
         catch {
             Write-Host "⚠️  Could not activate virtual environment automatically." -ForegroundColor Yellow
