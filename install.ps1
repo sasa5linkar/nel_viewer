@@ -144,9 +144,11 @@ Write-Host ""
 Write-Host "Step 5: Virtual Environment Setup (Optional)" -ForegroundColor Yellow
 Write-Host "Creating a virtual environment is recommended to avoid package conflicts." -ForegroundColor White
 
+$usingVirtualEnv = $false
 $response = Read-Host "Would you like to create a virtual environment? (y/n)"
 if ($response -eq "y" -or $response -eq "Y") {
     Write-Host "Creating virtual environment..." -ForegroundColor Cyan
+    $usingVirtualEnv = $true
     
     $venvPath = Join-Path $PSScriptRoot "venv"
     
@@ -234,8 +236,8 @@ Write-Host "     streamlit run app.py" -ForegroundColor Yellow
 Write-Host "  3. Open your browser at: http://localhost:8501" -ForegroundColor White
 Write-Host ""
 
-if ($response -eq "y" -or $response -eq "Y") {
-    Write-Host "Note: If you created a virtual environment, remember to activate it" -ForegroundColor Yellow
+if ($usingVirtualEnv) {
+    Write-Host "Note: You created a virtual environment. Remember to activate it" -ForegroundColor Yellow
     Write-Host "      before running the application:" -ForegroundColor Yellow
     Write-Host "      .\venv\Scripts\Activate.ps1" -ForegroundColor White
     Write-Host ""
