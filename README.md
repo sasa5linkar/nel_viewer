@@ -68,7 +68,7 @@ You can see a live demo of this application at: [Your Streamlit Cloud URL]
 
 3. **Install dependencies**
    ```bash
-   pip install -r requirements.txt
+   python -m pip install -r requirements.txt
    ```
 
 4. **Add your HTML files**

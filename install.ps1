@@ -182,7 +182,7 @@ if ($response -eq "y" -or $response -eq "Y") {
     if (Test-Path $activateScript) {
         Write-Host "Activating virtual environment..." -ForegroundColor Cyan
         try {
-            & $activateScript
+            . $activateScript
             Write-Host "✓ Virtual environment activated." -ForegroundColor Green
             # Update Python command to use virtual environment
             $venvPython = Join-Path $venvPath "Scripts\python.exe"
@@ -210,6 +210,12 @@ Write-Host ""
 
 try {
     & $pythonCommand -m pip install --upgrade pip
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host ""
+        Write-Host "❌ Failed to upgrade pip." -ForegroundColor Red
+        Write-Host "   Please check the error messages above." -ForegroundColor Red
+        exit 1
+    }
     Write-Host ""
     & $pythonCommand -m pip install -r $requirementsFile
     
