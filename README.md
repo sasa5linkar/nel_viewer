@@ -19,16 +19,24 @@ You can see a live demo of this application at: [Your Streamlit Cloud URL]
 
 ### Local Development
 
+#### Windows (Automated Installation)
+
 1. **Clone the repository**
    ```bash
    git clone https://github.com/yourusername/serbian-ner-viewer.git
    cd serbian-ner-viewer
    ```
 
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
+2. **Run the installation script**
+   ```powershell
+   .\install.ps1
    ```
+   
+   The script will:
+   - Check if Python is installed (if not, provide installation instructions)
+   - Verify Python version compatibility
+   - Optionally create a virtual environment
+   - Install all required dependencies automatically
 
 3. **Add your HTML files**
    - Place your NER-processed HTML files in the `examples/` or `sample_data/` folders
@@ -42,6 +50,39 @@ You can see a live demo of this application at: [Your Streamlit Cloud URL]
    ```
 
 5. **Open your browser**
+   - Navigate to `http://localhost:8501`
+   - Select an HTML file from the sidebar
+   - Explore the results and map!
+
+#### Linux/Mac or Manual Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/serbian-ner-viewer.git
+   cd serbian-ner-viewer
+   ```
+
+2. **Install Python** (if not already installed)
+   - Python 3.8 or higher is required
+   - Download from [python.org](https://www.python.org/downloads/)
+
+3. **Install dependencies**
+   ```bash
+   python -m pip install -r requirements.txt
+   ```
+
+4. **Add your HTML files**
+   - Place your NER-processed HTML files in the `examples/` or `sample_data/` folders
+   - Organize them in subfolders for better management (e.g., `examples/balkan_region/`)
+   - Files should contain entities marked with `<mark class="entity">` tags
+   - Location entities should have Wikidata QIDs in links
+
+5. **Run the application**
+   ```bash
+   streamlit run app.py
+   ```
+
+6. **Open your browser**
    - Navigate to `http://localhost:8501`
    - Select an HTML file from the sidebar
    - Explore the results and map!
@@ -142,6 +183,26 @@ The dropdown menu shows the full path (e.g., `examples/balkan_region/serbian_cit
 - Graceful fallbacks for missing data
 
 ## Troubleshooting
+
+### Windows Installation Issues
+
+#### PowerShell Script Execution Policy
+If you get an error about script execution being disabled:
+1. Open PowerShell as Administrator
+2. Run: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+3. Try running `.\install.ps1` again
+
+#### Python Not Found Error
+If the script reports Python is not installed even though you have it:
+1. Make sure Python was added to PATH during installation
+2. Close and reopen PowerShell/Command Prompt
+3. Try running: `python --version` or `py --version`
+4. If still not working, reinstall Python and check "Add Python to PATH"
+
+#### Virtual Environment Activation Issues
+If you can't activate the virtual environment:
+1. Try: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+2. Or run without virtual environment: directly use `python -m pip install -r requirements.txt`
 
 ### No entities found
 - Ensure HTML files have proper entity markup
